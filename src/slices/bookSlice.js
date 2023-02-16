@@ -58,11 +58,13 @@ export const bookSlice = createSlice({
       .addCase(fetchData.fulfilled, (state, action) => {
         state.status = null;
         state.loading = false;
-        state.books = action.payload;
+        if (action.payload) state.books = action.payload;
+        else toast.error("No data available");
       })
       .addCase(fetchData.rejected, (state, action) => {
         state.status = "failed";
         state.loading = false;
+        toast.error("No data available");
       });
     builder
       .addCase(addToReadingList.pending, (state) => {})
@@ -70,7 +72,7 @@ export const bookSlice = createSlice({
         toast.success("The book has been added to the reading list!");
       })
       .addCase(addToReadingList.rejected, (state, action) => {
-        toast.error(action.error.message);
+        toast.error("Cannot add the book to the reading list");
       });
     builder
       .addCase(getReadingList.pending, (state) => {
@@ -85,6 +87,7 @@ export const bookSlice = createSlice({
       .addCase(getReadingList.rejected, (state, action) => {
         state.status = "failed";
         state.loading = false;
+        toast.error("Cannot get the list of favorite books");
       });
     builder
       .addCase(removeBook.pending, (state) => {
@@ -95,7 +98,8 @@ export const bookSlice = createSlice({
         toast.success("The book has been removed");
       })
       .addCase(removeBook.rejected, (state, action) => {
-        state.status = "Failed to remove book";
+        state.status = "failed";
+        toast.error("Could not remove the book");
       });
     builder
       .addCase(getBookDetail.pending, (state) => {
@@ -108,8 +112,9 @@ export const bookSlice = createSlice({
         state.bookDetail = action.payload;
       })
       .addCase(getBookDetail.rejected, (state, action) => {
-        state.status = "Failed to remove book";
+        state.status = "failed";
         state.loading = false;
+        toast.error("Fail to get book details");
       });
   },
 });
